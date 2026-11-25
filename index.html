@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مقهى الضغط</title>
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Cairo:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--board:#1d2b2a;--chalk:#f6f1e7;--pink:#ff8fb8;--mint:#7fe0c3;--gold:#ffd166;--sky:#7cc8ff;--line:rgba(246,241,231,.35);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--board)}
+body{margin:0;background:radial-gradient(circle at 20% 0,#2a3d3b,var(--board) 60%);color:var(--chalk);font-family:"Cairo","Segoe UI",Tahoma,sans-serif;font-size:17px;line-height:1.7;min-height:100vh}
+main{max-width:720px;margin:0 auto;padding:14px 14px 40px}
+.lights{text-align:center;letter-spacing:6px;font-size:14px;color:var(--gold)}
+.ribbon{background:var(--pink);color:#4a1230;border-radius:10px;padding:6px 12px;text-align:center;font-family:"Aref Ruqaa","Cairo",serif;font-size:clamp(28px,8vw,44px);margin:8px 8px 4px;transform:rotate(-1.5deg);box-shadow:0 4px 0 #c45a85}
+.tag{text-align:center;margin:8px 0 14px;color:var(--mint)}
+.card{border:2px dashed var(--line);border-radius:18px;padding:12px 14px;margin:0 0 14px;background:rgba(255,255,255,.04)}
+h2{margin:0 0 4px;font-size:21px;font-weight:900;color:var(--gold)}
+.stamps{display:flex;gap:8px;justify-content:center;margin-top:6px}
+.stamps span{width:48px;height:48px;border-radius:50%;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;filter:grayscale(1) opacity(.35);transition:transform .3s}
+.stamps span.on{filter:none;border:2px solid var(--gold);background:rgba(255,209,102,.18);transform:rotate(-12deg) scale(1.08)}
+.menu button{display:flex;align-items:center;gap:10px;width:100%;text-align:right;background:none;border:0;border-bottom:1px dotted var(--line);color:var(--chalk);font:inherit;padding:8px 2px;cursor:pointer}
+.menu button b{font-size:19px;color:var(--sky)}
+.menu button i{font-style:normal;font-size:26px}
+.menu button small{display:block;color:var(--chalk);opacity:.75}
+.menu button.done b{color:var(--mint);text-decoration:line-through}
+.menu button.cur{background:rgba(255,143,184,.15);border-radius:10px}
+.q{font-weight:900;font-size:19px;margin:0 0 8px}
+.opt{display:block;width:100%;text-align:right;border:2px solid var(--line);background:rgba(255,255,255,.06);color:var(--chalk);border-radius:12px;padding:8px 12px;margin:0 0 8px;font:inherit;cursor:pointer}
+.opt.ok{background:#2e9e5b;border-color:#2e9e5b}.opt.no{background:#c0475a;border-color:#c0475a}
+.btn{border:0;border-radius:12px;padding:6px 18px;font:inherit;font-weight:700;cursor:pointer;background:var(--pink);color:#4a1230}
+.fb{font-weight:700;min-height:28px;color:var(--mint)}
+svg{width:100%;height:auto;display:block}
+.jet{fill:none;stroke:var(--sky);stroke-width:4;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:fl 1s ease-out forwards}
+@keyframes fl{to{stroke-dashoffset:0}}
+.hole{cursor:pointer}.hole circle{fill:var(--gold);stroke:var(--chalk);stroke-width:2}
+input{width:100%;font:inherit;padding:8px 12px;border-radius:12px;border:2px solid var(--line);background:rgba(255,255,255,.08);color:var(--chalk);margin:6px 0}
+.cert{display:none;text-align:center;border:4px double var(--gold);border-radius:16px;padding:18px;background:#fff8e7;color:#4a1230}
+.cert h3{margin:0;font-family:"Aref Ruqaa","Cairo",serif;font-size:30px}
+.cert .nm{font-size:30px;font-weight:900;color:#c45a85;margin:6px 0}
+footer{text-align:center;opacity:.8;margin-top:18px}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition:none!important}}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+<div class="lights" aria-hidden="true">● ● ● ● ● ● ● ●</div>
+<div class="ribbon">مقهى الضغط</div>
+<p class="tag">أهلًا وسهلًا! اطلب مشروبًا، وحلّ تحدّيه، واجمع الأختام الخمسة.</p>
+
+<div class="card"><h2>بطاقة الزبون المميز</h2><div class="stamps" id="st"></div></div>
+
+<div class="card menu"><h2>القائمة</h2><div id="menu"></div></div>
+
+<div class="card" id="panel" style="display:none"></div>
+
+<div class="card" id="fin" style="display:none">
+  <h2>🎉 جمعتَ الأختام كلها!</h2>
+  <input id="nm" placeholder="اكتب اسمك لتحصل على شهادتك" aria-label="اسمك">
+  <button class="btn" id="mk">أصدر شهادتي</button>
+  <div class="cert" id="cert"><h3>شهادة زبون مميز</h3><p>تُمنح إلى</p><div class="nm" id="cn"></div><p>لإتقانه درس ضغط السائل في مقهى الضغط</p><p>أ. سامر حسن</p></div>
+</div>
+<footer>من تصميم الأستاذ سامر حسن</footer>
+</main>
+
+<script>
+var $=function(i){return document.getElementById(i)},got={},cur=-1;
+function shuf(a){return a.slice().sort(function(){return Math.random()-.5})}
+function mcq(el,q,o,ex,id){el.innerHTML='<p class="q">'+q+'</p><div id="o"></div><p class="fb" id="f"></p>';var lk=0;
+ shuf([0,1,2]).forEach(function(i){var b=document.createElement('button');b.className='opt';b.textContent=o[i];b.onclick=function(){if(lk)return;
+  if(i==0){lk=1;b.classList.add('ok');$('f').textContent='✅ '+ex;win(id)}else{b.classList.add('no');$('f').textContent='جرّب مرة أخرى ☕'}};$('o').appendChild(b)})}
+var IT=[
+['☕','قهوة الضغط','من أين ينشأ ضغط السائل؟',function(el){mcq(el,'من أين ينشأ ضغط السائل؟',['من اصطدام جسيماته بجدران الوعاء وقاعدته','من لون السائل','من حرارة الكوب فقط'],'الجسيمات تتحرك عشوائيًا وتؤثر بقوى عمودية في الجدران.',0)}],
+['🧃','عصير العمق','كوب بثلاثة ثقوب',function(el){
+  el.innerHTML='<p class="q">اضغط على الثقوب الثلاثة وراقب اندفاع العصير 🧃</p><svg viewBox="0 0 400 300" id="cup"></svg><p class="fb" id="f">أي ثقب سيندفع منه العصير أبعد؟ جرّب!</p>';
+  var H=[70,130,190],seen={},s='<path d="M200 30 L330 30 L315 280 L215 280 Z" fill="#ff8fb8" opacity=".55" stroke="#f6f1e7" stroke-width="3"/><rect x="190" y="285" width="220" height="8" fill="#a97b50"/>',g='';
+  H.forEach(function(y,i){var x=200+(y-30)*0.05;g+='<g class="hole" data-i="'+i+'"><circle cx="'+x.toFixed(0)+'" cy="'+y+'" r="9"/></g>'});
+  $('cup').innerHTML=s+'<g id="jets"></g>'+g;
+  $('cup').querySelectorAll('.hole').forEach(function(h){h.onclick=function(){var i=+h.dataset.i,y=H[i],x=200+(y-30)*0.05,d=y-30,hh=285-y,R=1.15*Math.sqrt(d*hh),p='M'+x+' '+y;
+   for(var t=.05;t<=1.001;t+=.05)p+=' L'+(x-t*R).toFixed(1)+' '+(y+(285-y)*t*t).toFixed(1);
+   $('jets').insertAdjacentHTML('beforeend','<path class="jet" pathLength="1" d="'+p+'"/>');seen[i]=1;
+   if(Object.keys(seen).length==3){$('f').textContent='✅ الثقب الأعمق اندفع أبعد وأقوى، لأن الضغط يزداد بزيادة العمق.';win(1)}}})}],
+['🫖','شاي الزئبق','ماء أم زئبق؟',function(el){mcq(el,'عند عمق 1 م: ضغط الماء 10 kPa وضغط الزئبق 136 kPa. لماذا الزئبق أكبر؟',['لأن كثافته أكبر (≈ 13.6 ضعف الماء)','لأنه أبرد','لأن وعاءه أطول'],'الضغط يزداد بزيادة كثافة السائل.',2)}],
+['🍰','كيكة الأشكال','أوعية مختلفة، ضغط واحد؟',function(el){
+  el.innerHTML='<svg viewBox="0 0 400 150"><rect x="20" y="40" width="360" height="100" rx="12" fill="#7cc8ff" opacity=".45"/><line x1="20" x2="380" y1="95" y2="95" stroke="#ffd166" stroke-dasharray="6" stroke-width="3"/><ellipse cx="90" cy="95" rx="30" ry="40" fill="#fff" opacity=".18"/><rect x="170" y="60" width="30" height="80" fill="#fff" opacity=".18"/><path d="M270 50 L340 50 L310 140 L290 140 Z" fill="#fff" opacity=".18"/><circle cx="90" cy="95" r="7" fill="#ff8fb8"/><circle cx="185" cy="95" r="7" fill="#ff8fb8"/><circle cx="300" cy="95" r="7" fill="#ff8fb8"/></svg><div id="m"></div>';
+  mcq($('m'),'النقاط الوردية على العمق نفسه في أوعية مختلفة الشكل. ماذا عن ضغط السائل عندها؟',['متساوٍ، فالشكل لا يؤثر','أكبر في الوعاء الأوسع','أكبر في الوعاء الأضيق'],'ضغط السائل عند العمق نفسه لا يعتمد على شكل الوعاء.',3)}],
+['🤿','لاتيه الغوّاص','احسب الضغط الكلي',function(el){mcq(el,'غوّاص على عمق 30 م تحت سطح الماء. كم الضغط الكلي؟ (الجوي 1×10⁵ Pa، ويزداد 1×10⁵ Pa لكل 10 م)',['4 × 10⁵ Pa','3 × 10⁵ Pa','6 × 10⁵ Pa'],'1 (جوي) + 3 (ماء) = 4 × 10⁵ Pa.',4)}]];
+var C=['🥛','🧃','🫖','🍰','🤿'];
+IT.forEach(function(t,i){var b=document.createElement('button');b.id='b'+i;b.innerHTML='<i>'+t[0]+'</i><span><b>'+t[1]+'</b><small>'+t[2]+'</small></span>';
+ b.onclick=function(){cur=i;document.querySelectorAll('#menu button').forEach(function(x,j){x.classList.toggle('cur',j==i)});var p=$('panel');p.style.display='block';t[3](p);p.scrollIntoView({behavior:'smooth',block:'nearest'})};$('menu').appendChild(b);
+ var s=document.createElement('span');s.textContent=t[0];$('st').appendChild(s)});
+function win(i){if(got[i])return;got[i]=1;$('st').children[i].classList.add('on');$('b'+i).classList.add('done');
+ if(Object.keys(got).length==5){$('fin').style.display='block';$('fin').scrollIntoView({behavior:'smooth'})}}
+$('mk').onclick=function(){var n=$('nm').value.trim();if(!n){$('nm').focus();return}$('cn').textContent=n;$('cert').style.display='block'};
+</script>
+</body>
+</html>
